@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Internal Marks Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        body.dark-mode {
+            background-color: #333;
+            color: #fff;
+        }
+
+        .dark-mode input,
+        .dark-mode button,
+        .dark-mode .toggle-button {
+            background-color: #555;
+            color: #fff;
+        }
+
+        h1 {
+            text-align: center;
+        }
+
+        .input-row {
+            margin-bottom: 15px;
+        }
+
+        .input-row label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .input-row input,
+        .input-row button {
+            width: calc(33.33% - 5px);
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            margin-right: 5px;
+            margin-bottom: 5px;
+            cursor: pointer;
+        }
+
+        .input-row button:last-child {
+            margin-right: 0;
+        }
+
+        .input-row button.toggle-button {
+            background-color: #dc3545;
+            color: #fff;
+        }
+
+        .input-row button.toggle-button.active {
+            background-color: #28a745;
+        }
+
+        .input-row button.calculate-button {
+            background-color: #007bff;
+            color: #fff;
+        }
+
+        .input-row button.reset-button {
+            background-color: #ffc107;
+            color: #000;
+        }
+
+        .result {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 14px;
+            color: #555;
+        }
+
+        .dark-mode .footer {
+            color: #bbb;
+        }
+
+        .dark-mode-toggle {
+            display: block;
+            margin: 10px auto;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            cursor: pointer;
+            width: 100%;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Internal Marks Calculator</h1>
+    <div class="input-row">
+        <label for="model1">Model 1 Marks:</label>
+        <input type="number" id="model1" placeholder="Enter marks for Model 1" oninput="calculateInternalMarks()">
+    </div>
+    <div class="input-row">
+        <label for="model2">Model 2 Marks:</label>
+        <input type="number" id="model2" placeholder="Enter marks for Model 2" oninput="calculateInternalMarks()">
+    </div>
+    <div class="input-row">
+        <label for="model3">Model 3 Marks:</label>
+        <input type="number" id="model3" placeholder="Enter marks for Model 3" oninput="calculateInternalMarks()">
+    </div>
+    <div class="input-row">
+        <label for="skillRack">Have you finished Skill Rack for this semester?</label>
+        <button id="skillRack" class="toggle-button" onclick="toggleButton(this)">No</button>
+    </div>
+    <div class="input-row">
+        <label for="courseCompletion">Have you completed 30 hours course?</label>
+        <button id="courseCompletion" class="toggle-button" onclick="toggleButton(this)">No</button>
+    </div>
+    <div class="input-row">
+        <button class="calculate-button" onclick="calculateInternalMarks()">Calculate</button>
+        <button class="reset-button" onclick="resetFields()">Reset</button>
+        <button class="dark-mode-toggle" onclick="toggleDarkMode()">Light Mode</button>
+    </div>
+    <div class="result" id="result"></div>
+
+    <div class="footer">
+        Made by J Jeevan from Mechanical Department
+    </div>
+
+    <script>
+        function toggleButton(button) {
+            if (button.classList.contains('active')) {
+                button.classList.remove('active');
+                button.innerText = "No";
+            } else {
+                button.classList.add('active');
+                button.innerText = "Yes";
+            }
+            calculateInternalMarks();
+        }
+
+        function calculateInternalMarks() {
+            // Get the values from the input fields
+            var model1 = parseFloat(document.getElementById('model1').value);
+            var model2 = parseFloat(document.getElementById('model2').value);
+            var model3 = parseFloat(document.getElementById('model3').value);
+
+            // Check if the inputs are valid numbers
+            if (isNaN(model1) || isNaN(model2) || isNaN(model3) || model1 < 0 || model2 < 0 || model3 < 0 || model1 > 100 || model2 > 100 || model3 > 100) {
+                document.getElementById('result').innerText = "Please enter valid numbers (0-100) for all models.";
+                return;
+            }
+
+            // Perform the calculations
+            var sumModel1AndModel2 = model1 + model2;
+            var intermediateResult1 = sumModel1AndModel2 * 1.5;
+            var intermediateResult1Divided = intermediateResult1 / 2;
+            var finalResultFromModel1AndModel2 = intermediateResult1Divided * 0.15;
+
+            var intermediateResult2 = model3 * 1.5;
+            var finalResultFromModel3 = intermediateResult2 * 0.15;
+
+            var internalMarks = finalResultFromModel1AndModel2 + finalResultFromModel3;
+
+            // Cap the internal marks at 30
+            if (internalMarks > 30) {
+                internalMarks = 30;
+            }
+
+            // Add 5 points if Skill Rack is completed
+            var skillRackButton = document.getElementById('skillRack');
+            if (skillRackButton.classList.contains('active')) {
+                internalMarks += 5;
+            }
+
+            // Add 5 points if 30 hours course is completed
+            var courseCompletionButton = document.getElementById('courseCompletion');
+            if (courseCompletionButton.classList.contains('active')) {
+                internalMarks += 5;
+            }
+
+            // Cap the final internal marks at 40
+            if (internalMarks > 40) {
+                internalMarks = 40;
+            }
+
+            // Display the result
+            document.getElementById('result').innerText = "Your internal marks: " + internalMarks.toFixed(2);
+        }
+
+
+        function resetFields() {
+            document.getElementById('model1').value = '';
+            document.getElementById('model2').value = '';
+            document.getElementById('model3').value = '';
+            document.getElementById('skillRack').classList.remove('active');
+            document.getElementById('skillRack').innerText = "No";
+            document.getElementById('courseCompletion').classList.remove('active');
+            document.getElementById('courseCompletion').innerText = "No";
+            document.getElementById('result').innerText = '';
+        }
+
+        function toggleDarkMode() {
+            var darkModeButton = document.querySelector('.dark-mode-toggle');
+            var body = document.body;
+            if (body.classList.contains('dark-mode')) {
+                body.classList.remove('dark-mode');
+                darkModeButton.innerText = "Light Mode";
+            } else {
+                body.classList.add('dark-mode');
+                darkModeButton.innerText = "Dark Mode";
+            }
+            calculateInternalMarks();
+        }
+    </script>
+</body>
+
+</html>
